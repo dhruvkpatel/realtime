@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<head>
+</head>
+
+<body>
+
+	<script src="webrtc-client.js"></script>
+    <script src="Index.js"></script>
+    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+
+    <a-scene>
+		<a-assets timeout="3000">
+			<video id="camera360" muted="muted"></video>
+		</a-assets>
+
+		<a-videosphere id="camera360entity" src="#camera360"></a-videosphere>
+	</a-scene>
+
+</body>
+
+</html>
