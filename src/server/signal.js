@@ -44,6 +44,7 @@ exports.spin = function(port) {
 		    	data = {}; 
 		    } 
 
+		    console.log(data.type);
 		    // console.log(`Message from client ${clientID}: ${data.type}`);
 
 		    switch (data.type) {

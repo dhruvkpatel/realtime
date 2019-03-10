@@ -5,35 +5,31 @@ const connection = new Connection({
 	hostname: window.location.hostname,
 	port: SIGNAL_SERVER_PORT,
 	offerOnReady: false,
-	onReceiveStream: onReceiveStream
 });
 
-// const videoEntity = document.querySelector('camera360entity');
+connection.rtcPeerConnection.ontrack = (event) => onGetStreams(connection.rtcPeerConnection);
 
-function onReceiveStream(stream) {
-  console.log("got stream");
+let stream360 = undefined;
 
-	// Make stream availible on console
-	window.stream = stream;
+function onGetStreams (rtcPeerConnection) {
+
+	let streams = rtcPeerConnection.getRemoteStreams();
+	stream360 = streams[0];
 
 	// Display video on browser
 	let video = document.querySelector('#camera360');
 
-  	if ("srcObject" in video) {
-      	video.srcObject = stream;
-    } 
-    else {
-    	// Older browsers may not have srcObject
-     	video.src = window.URL.createObjectURL(stream);
-    }
+	if ("srcObject" in video) {
+		video.srcObject = stream360;
+	} 
+	else {
+		// Older browsers may not have srcObject
+		video.src = window.URL.createObjectURL(stream);
+	}
 
-    // video.src = window.URL.createObjectURL(stream);
-
-    video.onloadedmetadata = function(_) {
-        video.play().catch(function (error) {
-            console.log(error)
-        });
-
-        // videoEntity.play();
+	video.onloadedmetadata = function(_) {
+		video.play().catch(function (error) {
+		    console.log(error)
+		});
     };
 }
