@@ -47,7 +47,7 @@ robot_app.listen(robot_port, robot_hostname, () => {
 });
 
 // Automatically opens robot web page
-opn(`http://${robot_hostname}:${robot_port}/`);
+// opn(`http://${robot_hostname}:${robot_port}/`);
 
 /*
  * VR diplay Web-App 

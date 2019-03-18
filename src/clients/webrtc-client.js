@@ -8,8 +8,7 @@ class Connection {
 		room,
 		hostname, 
 		port, 
-		offerOnReady, 
-		onReceiveStream=function(stream) {}
+		offerOnReady
 	}) {
 		let that = this;
 
@@ -19,27 +18,13 @@ class Connection {
 		}
 
 		// Set up WebRTC Peer Connection & Handlers
-		this.rtcPeerConnection = new webkitRTCPeerConnection(RTCCONFIG);
-		this.rtcPeerConnection.onicecandidate = function (event) {
-			if (event.candidate) {
-				that.sendWS({
-					type: 'candidate',
-					candidate: event.candidate
-				});
-			}
-		};
-
-		// Set up media stream handler
-		this.rtcPeerConnection.ontrack = function (event) {
-			onReceiveStream(event.streams[0]);
-		};
-
+		this.rtcPeerConnection = this._connection(); // TODO: restore use of function
 
 		// Set up WebSockets Signaling Server Connection & Handlers
 		this.room = room;
 		this.signalConnection = new WebSocket(`ws://${hostname}:${port}`);
 		this.signalConnection.onmessage = function (message) {
-			console.log('Got message:', message.data);
+			// console.log('Got message:', message.data);
 
 			let data = JSON.parse(message.data); 
 			switch(data.type) { 
@@ -62,21 +47,11 @@ class Connection {
 
 		// Broadcast room to Signal server (once connection is open)
 		this.signalConnection.onopen = function (event) {
-			console.log(that);
 			that.sendWS({
 				type: 'ready',
 				room: that.room
 			});
-		};
-		
-	}
-
-	addStream(stream) {
-		let that = this;
-		stream.getTracks().forEach(function (track) {
-			that.rtcPeerConnection.addTrack(track, stream)
-		});
-		// this.rtcPeerConnection.addStream(stream);
+		};		
 	}
 
 	// Sends JSON message to Signal Server
@@ -84,8 +59,23 @@ class Connection {
 		this.signalConnection.send(JSON.stringify(message));
 	}
 
+	_connection() {
+		let that = this;
+		let connection = new RTCPeerConnection(RTCCONFIG);
+		connection.onicecandidate = function (event) {
+			if (event.candidate) {
+				that.sendWS({
+					type: 'candidate',
+					candidate: event.candidate
+				});
+			}
+		};
+		return connection;
+	}
+
 	// When two clients enter the same room - one of them will make an offer
 	_onReady(offerOnReady) {
+
 		if (offerOnReady) {
 			let that = this;
 
