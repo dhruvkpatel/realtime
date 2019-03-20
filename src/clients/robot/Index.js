@@ -7,7 +7,6 @@ const connection = new Connection({
 	offerOnReady: true, 
 });
 
-
 class VideoStream {
 
 	constructor(streamLabel, objectClass, rtcConnection) {

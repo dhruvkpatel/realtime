@@ -3,7 +3,6 @@ const RTCCONFIG = {
 };
 
 class Connection {
-
 	constructor({
 		room,
 		hostname, 
@@ -51,12 +50,30 @@ class Connection {
 				type: 'ready',
 				room: that.room
 			});
-		};		
+		};	
+
+		this.rtcPeerConnection.onnegotiationneeded = function (event) {
+			that.createOffer();
+		}	
 	}
 
 	// Sends JSON message to Signal Server
 	sendWS(message) {
 		this.signalConnection.send(JSON.stringify(message));
+	}
+
+	// Sends offer to Signal Server
+	createOffer() {
+		let that = this;
+		this.rtcPeerConnection.createOffer(function (offer) {
+			that.sendWS({
+				type: 'offer',
+				offer: offer
+			});
+			that.rtcPeerConnection.setLocalDescription(offer);
+		}, function (error) {
+			console.error('Cannot create WebRTC offer');
+		});
 	}
 
 	_connection() {
@@ -70,24 +87,14 @@ class Connection {
 				});
 			}
 		};
+
 		return connection;
 	}
 
 	// When two clients enter the same room - one of them will make an offer
 	_onReady(offerOnReady) {
-
 		if (offerOnReady) {
-			let that = this;
-
-			this.rtcPeerConnection.createOffer(function (offer) {
-				that.sendWS({
-					type: 'offer',
-					offer: offer
-				});
-				that.rtcPeerConnection.setLocalDescription(offer);
-			}, function (error) {
-				console.error('Cannot create WebRTC offer');
-			});
+			this.createOffer();
 		}
 	}
 
