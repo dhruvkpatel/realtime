@@ -44,9 +44,7 @@ exports.spin = function(port) {
 		    	data = {}; 
 		    } 
 
-		    console.log(data.type);
 		    // console.log(`Message from client ${clientID}: ${data.type}`);
-
 		    switch (data.type) {
 
 		    	// Client broadcasts that it is ready to enter a room
@@ -86,9 +84,9 @@ exports.spin = function(port) {
 		    				console.error(`Ill-formed ${data.type} request: ${message}`);
 		    			}
 		    		}
-		    		else {
-		    			console.error(`${data.type} attempt when both candidates are not ready`);
-		    		}
+		    		// else {
+		    		// 	console.error(`${data.type} attempt when both candidates are not ready`);
+		    		// }
 		    		break;
 
 		    	default:
