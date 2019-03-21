@@ -4,12 +4,26 @@
 </head>
 
 <body>
-	<div class="v360" align="center">
-	  	<video></video></br>
-	  	<select></select>
-	</div>
+	<div class="video-board">
+		<div id="camera360" class="video-column">
+			<h1>360 Camera</h1>
+			<div class="video-box">
+				<video></video>
+			</div>
+			<select></select>
+		</div>
 
+		<div id="cameraRegular" class="video-column">
+			<h1>Moving Camera</h1>
+	  		<div class="video-box">
+				<video></video>
+			</div>
+			<select></select>
+		</div>
+	</div>
+	
     <script src="webrtc-client.js"></script>
+    <script src="video-stream.js"></script>
     <script src="Index.js"></script>
 </body>
 
@@ -18,19 +32,54 @@
 	body {
 		background: #343d46; 
 	}
-	video {
-		margin: 20px;
-		border: 7px outset #c0c5ce;
-		-webkit-transform: scaleX(-1);
-		transform: scaleX(-1);
+
+	.video-board {
+		display: flex;
+		height: 100%;
+		width: 100%;
+		flex-direction: row;
 	}
 
-	select {
+	.video-column {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+	}
+	
+	.video-column > h1 {
+		font-weight: normal;
+		font-family: Open Sans; 
+		font-size: 2vw;
+		margin: 2px auto;
+		text-align: center;
+		color: white;
+	}
+
+	.video-column > .video-box {
+		display: flex;
+		background-color: black;
+		margin: 1.3%;
+		border: 5px outset #c0c5ce;
+		min-height: 270px;
+	}
+
+	.video-column > select {
 		font-family: Open Sans; 
 		font-size: 14px;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		text-align: center;
+		width: 60%;
 		height: 28px;
-		width: 240px;
 		background-color: #000; 
 		color: #fff; 
+	}
+
+	.video-box > video {
+		height: 100%;
+		width: 100%;
+		object-fit: contain;
+		object-position: 50% 50%;
 	}
 </style>
