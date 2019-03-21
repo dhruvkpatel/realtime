@@ -7,89 +7,44 @@ const connection = new Connection({
 	offerOnReady: true, 
 });
 
-class VideoStream {
+let videoLabelChannel;
+let dataChannelInit = new Promise(function (resolve, reject) {
+	videoLabelChannel = connection.rtcPeerConnection.createDataChannel("Video Labels", {id: 0});
+	videoLabelChannel.onopen = resolve;
+});
 
-	constructor(streamLabel, objectClass, rtcConnection) {
-		this.label = streamLabel;
-		this.objectClass = objectClass;
-		this.connection = rtcConnection;
-		this.rtpSender = undefined;
-		this.trackID = undefined;
+let video360;
+let video360Init = new Promise(function (resolve, reject) {
+	video360 = new VideoStream('video360', 'camera360', connection);
+	video360.onTrackID = resolve;
+});
 
-		this.videoDisplay = document.querySelector(`.${this.objectClass}>video`);
-		this.videoSelect =  document.querySelector(`.${this.objectClass}>select`);
+let videoRegular;
+let videoRegularInit = new Promise(function (resolve, reject) {
+	videoRegular = new VideoStream('videoRegular', 'cameraRegular', connection);
+	videoRegular.onTrackID = resolve;
+});
 
-		// Manual stream selection
-		this.videoSelect.onchange = () => this.getStream();
-
-		// List devices & initially pick first one
-		navigator.mediaDevices.enumerateDevices()
-			.then((deviceInfos) => this.onGotDevices(deviceInfos))
-			.then(() => this.getStream())
-			.catch(this.handleError);
-	}
-
-	/**
-	 *  Callback for retrieving list of availible devices from OS
-	 */
-	onGotDevices(deviceInfos) {
-		for (let i = 0; i < deviceInfos.length; i++) {
-			const deviceInfo = deviceInfos[i];
-		
-			if (deviceInfo.kind === 'videoinput') {
-				const option = document.createElement('option');
-				option.value = deviceInfo.deviceId;
-				option.text = deviceInfo.label || 'Camera ' + (this.videoSelect.length + 1);
-			 	this.videoSelect.appendChild(option);
-			}
-	  	}
-	}
-
-	/**
-	 *  Callback for getting camera stream once device is known
-	 */
-	getStream() {
-	 	// Remove old track if one exists
-	 	if (this.rtpSender) {
-	 		this.connection.rtcPeerConnection.removeTrack(this.rtpSender);
-	 	}
-
-	  	const constraints = {
-			audio: false,
-			video: {
-			  	deviceId: {exact: this.videoSelect.value}
-			}
-	  	};
-
-	  	navigator.mediaDevices.getUserMedia(constraints)
-			.then((stream) => this.onGotStream(stream));
-	}
-
-	/**
-	 *  Callback for setting up video in local browser once stream is availible
-	 */
-	onGotStream(stream) {
-		window.stream = stream;
-
-	  	if ("srcObject" in this.videoDisplay) {
-	      	this.videoDisplay.srcObject = stream;
-	    } 
-	    else {
-	    	// Older browsers may not have srcObject
-	     	this.videoDisplay.src = window.URL.createObjectURL(stream);
-	    }
-
-	    this.videoDisplay.onloadedmetadata = () => this.videoDisplay.play();
-
-	    // Stream video
-	   	let track = stream.getTracks()[0];
-	   	this.rtpSender = this.connection.rtcPeerConnection.addTrack(track, stream);
-	}
-
-	handleError(error) {
-		console.log(error);
-	}
+send360ID = function (trackID) {
+	videoLabelChannel.send(JSON.stringify({
+   		type: 'label',
+   		label: video360.label,
+   		trackID: trackID
+	}));
 }
+Promise.all([dataChannelInit, video360Init]).then(function (trackID) {
+	send360ID(trackID[1]);
+	video360.onTrackID = send360ID;
+});
 
-
-let video360 = new VideoStream('video_360', 'v360', connection);
+sendRegularID = function (trackID) {
+	videoLabelChannel.send(JSON.stringify({
+   		type: 'label',
+   		label: videoRegular.label,
+   		trackID: trackID
+	}));
+}
+Promise.all([dataChannelInit, videoRegularInit]).then(function (trackID) {
+	sendRegularID(trackID[1]);
+	videoRegular.onTrackID = sendRegularID;
+});

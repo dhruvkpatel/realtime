@@ -39,6 +39,10 @@ robot_app.get('/webrtc-client.js', (req, res) => {
 	res.sendFile(root + '/clients/webrtc-client.js');
 });
 
+robot_app.get('/video-stream.js', (req, res) => {
+	res.sendFile(root + '/clients/robot/video-stream.js');
+});
+
 robot_app.get('/')
 
 robot_app.listen(robot_port, robot_hostname, () => {
@@ -70,7 +74,7 @@ display_app.get('/webrtc-client.js', (req, res) => {
 
 display_app.listen(display_port, display_hostname, () => {
 	console.log('Open this webpage on the VR display device:');
-	console.log(`http://${display_hostname}:${display_port}/\n`);
+	console.log(`http://${display_hostname}:${display_port}/`);
 });
 
 // Automatically opens display web page (for debugging)

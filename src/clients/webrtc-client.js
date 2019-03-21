@@ -110,7 +110,7 @@ class Connection {
 			});
 			that.rtcPeerConnection.setLocalDescription(answer);
 		}, function (error) {
-			console.error('Cannot create WebRTC answer');
+			console.error('Cannot create WebRTC answer', error);
 		});
 	}
 
