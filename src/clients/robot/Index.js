@@ -16,35 +16,37 @@ let dataChannelInit = new Promise(function (resolve, reject) {
 let video360;
 let video360Init = new Promise(function (resolve, reject) {
 	video360 = new VideoStream('video360', 'camera360', connection);
-	video360.onTrackID = resolve;
+	video360.onMid = resolve;
 });
 
 let videoRegular;
 let videoRegularInit = new Promise(function (resolve, reject) {
 	videoRegular = new VideoStream('videoRegular', 'cameraRegular', connection);
-	videoRegular.onTrackID = resolve;
+	videoRegular.onMid = resolve;
 });
 
-send360ID = function (trackID) {
+send360ID = function (mid) {
 	videoLabelChannel.send(JSON.stringify({
    		type: 'label',
    		label: video360.label,
-   		trackID: trackID
+   		mid: mid
 	}));
 }
-Promise.all([dataChannelInit, video360Init]).then(function (trackID) {
-	send360ID(trackID[1]);
-	video360.onTrackID = send360ID;
+Promise.all([dataChannelInit, video360Init]).then(function (event) {
+	let tranceiver = event[1];
+	send360ID(tranceiver.mid);
+	video360.onMid = send360ID;
 });
 
-sendRegularID = function (trackID) {
+sendRegularID = function (mid) {
 	videoLabelChannel.send(JSON.stringify({
    		type: 'label',
    		label: videoRegular.label,
-   		trackID: trackID
+   		mid: mid
 	}));
 }
-Promise.all([dataChannelInit, videoRegularInit]).then(function (trackID) {
-	sendRegularID(trackID[1]);
-	videoRegular.onTrackID = sendRegularID;
+Promise.all([dataChannelInit, videoRegularInit]).then(function (event) {
+	let tranceiver = event[1];
+	sendRegularID(tranceiver.mid);
+	videoRegular.onMid = sendRegularID;
 });

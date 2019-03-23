@@ -8,15 +8,13 @@
 	
     <a-scene>
 		<a-assets timeout="10000">
-			<video id="camera360" muted="muted"></video>
 			<video id="cameraRegular" muted="muted"></video>
+			<video id="camera360" muted="muted"></video>
 		</a-assets>
 
 		<a-entity camera look-controls position="0 0 0">
-			<a-video src="#cameraRegular" position="0 -5 -18" height="9" width="16" rotation="3 0 0"></a-video>	
+			<a-video src="#cameraRegular" position="0 0 -18" height="9" width="16" rotation="3 0 0"></a-video>	
 		</a-entity>
-
-		<!-- <a-curvedimage src="#cameraRegular" height="5" position="0 0 0" radius="8" theta-start="-36"theta-length="72" rotation="5 180 0"></a-curvedimage> -->
 
 		<a-videosphere id="camera360entity" src="#camera360"></a-videosphere>
 	</a-scene>
@@ -25,8 +23,7 @@
 	<script src="Index.js"></script>
 </body>
 
-<!-- 
-<body>
+<!-- <body>
     <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
 	
     <a-scene>

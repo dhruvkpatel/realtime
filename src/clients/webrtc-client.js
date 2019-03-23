@@ -1,5 +1,5 @@
 const RTCCONFIG = {
-	'iceServers': [{ 'urls': 'stun:stun2.1.google.com:19302' }]
+	'iceServers': [{'urls': ['stun:stun1.l.google.com:19302', 'stun:stun2.1.google.com:19302']}]
 };
 
 class Connection {
