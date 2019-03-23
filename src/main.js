@@ -20,7 +20,7 @@ const signal_port = 9000;
 signal.spin(signal_port);
 
 /*
- * Robot Command server
+ *
  */
 
 /*
