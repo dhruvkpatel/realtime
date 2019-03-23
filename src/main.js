@@ -20,6 +20,10 @@ const signal_port = 9000;
 signal.spin(signal_port);
 
 /*
+ * Robot Command server
+ */
+
+/*
  * Robot-connected Web-App
  * Will run on browser of robot -- attached to cameras & servos
  */
