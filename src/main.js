@@ -4,6 +4,7 @@ const express = require('express');
 const opn = require('opn');
 const internalIp = require('internal-ip');
 const signal = require('./server/signal.js');
+const servo = require('./server/servo-control.js');
 
 // const hostname = internalIp.v4.sync();
 // const hostname = '127.0.0.1';
@@ -18,6 +19,12 @@ console.log('---------------------------------------\n');
  */
 const signal_port = 9000;
 signal.spin(signal_port);
+
+/*
+ * Servo Control server
+ */
+const servo_port = 9001;
+servo.spin(servo_port);
 
 /*
  * Robot-connected Web-App
@@ -74,7 +81,7 @@ display_app.get('/webrtc-client.js', (req, res) => {
 
 display_app.listen(display_port, display_hostname, () => {
 	console.log('Open this webpage on the VR display device:');
-	console.log(`http://${display_hostname}:${display_port}/`);
+	console.log(`http://${display_hostname}:${display_port}/\n`);
 });
 
 // Automatically opens display web page (for debugging)

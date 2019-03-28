@@ -1,5 +1,6 @@
 const SIGNAL_SERVER_PORT = 9000;
 
+// Open WebRTC connection
 const connection = new Connection({
 	room: 1,
 	hostname: window.location.hostname,
@@ -7,44 +8,44 @@ const connection = new Connection({
 	offerOnReady: true, 
 });
 
+// Open Channel to send video data
 let videoLabelChannel;
-let dataChannelInit = new Promise(function (resolve, reject) {
+let videoLabelChannelInit = new Promise(function (resolve, reject) {
 	videoLabelChannel = connection.rtcPeerConnection.createDataChannel("Video Labels", {id: 0});
 	videoLabelChannel.onopen = resolve;
 });
 
+// let servoControlChannel;
+// let servoControlChannelInit = new Promise((resolve, reject) => {
+// 	servoControlChannel = 
+// });
+ 
+// Initialize 360 Video
 let video360;
 let video360Init = new Promise(function (resolve, reject) {
 	video360 = new VideoStream('video360', 'camera360', connection);
 	video360.onTrackID = resolve;
 });
 
+// Initialize Regular Video
 let videoRegular;
 let videoRegularInit = new Promise(function (resolve, reject) {
 	videoRegular = new VideoStream('videoRegular', 'cameraRegular', connection);
 	videoRegular.onTrackID = resolve;
 });
 
-send360ID = function (trackID) {
+function sendTrackID(video, trackID) {
 	videoLabelChannel.send(JSON.stringify({
    		type: 'label',
-   		label: video360.label,
+   		label: video.label,
    		trackID: trackID
 	}));
 }
-Promise.all([dataChannelInit, video360Init]).then(function (trackID) {
-	send360ID(trackID[1]);
-	video360.onTrackID = send360ID;
-});
 
-sendRegularID = function (trackID) {
-	videoLabelChannel.send(JSON.stringify({
-   		type: 'label',
-   		label: videoRegular.label,
-   		trackID: trackID
-	}));
-}
-Promise.all([dataChannelInit, videoRegularInit]).then(function (trackID) {
-	sendRegularID(trackID[1]);
+Promise.all([videoLabelChannelInit, video360Init, videoRegularInit]).then((inputs) => {
+	sendTrackID(video360, inputs[1]);
+	video360.onTrackID = send360ID;
+
+	sendTrackID(videoRegular, inputs[2]);
 	videoRegular.onTrackID = sendRegularID;
 });
