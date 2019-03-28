@@ -1,5 +1,5 @@
 const RTCCONFIG = {
-	'iceServers': [{ 'url': 'stun:stun2.1.google.com:19302' }]
+	'iceServers': [{'urls': ['stun:stun1.l.google.com:19302', 'stun:stun2.1.google.com:19302']}]
 };
 
 class Connection {
@@ -126,7 +126,6 @@ class Connection {
 }
 
 function hasRTCPeerConnection() {
-    window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
     return !!window.RTCPeerConnection;
 }
 

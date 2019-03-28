@@ -1,5 +1,5 @@
 const SIGNAL_SERVER_PORT = 9000;
-let trackIDs = {};
+let tranceiverMids = {};
 
 const connection = new Connection({
 	room: 1,
@@ -9,21 +9,21 @@ const connection = new Connection({
 });
 
 function onGetStreams (rtcPeerConnection) {
-	let streams = rtcPeerConnection.getRemoteStreams();
-	let streamIDs = {};
+	let transceivers = rtcPeerConnection.getTransceivers();
+	let midStreams = {};
 
-	// Find streamIDs for all availiable track
-	streams.forEach(function (stream) {
-		stream.getTracks().forEach(function (track) {
-			streamIDs[track.id] = stream;
-		});
+	// Find midStreams for all availiable track
+	transceivers.forEach(function (transceiver) {
+		track = transceiver.receiver.track;
+		midStreams[transceiver.mid] = new MediaStream([track]);
 	});
-		
+
+
 	// Display 360 video on browser
 	let video360 = document.querySelector('#camera360');
-	if (streamIDs[trackIDs['video360']]) {
-		let trackID = trackIDs['video360'];
-		let stream = streamIDs[trackID];
+	if (midStreams[tranceiverMids['video360']]) {
+		let mid = tranceiverMids['video360'];
+		let stream = midStreams[mid];
 		video360.srcObject = stream;
 
 		video360.onloadedmetadata = function(_) {
@@ -35,9 +35,9 @@ function onGetStreams (rtcPeerConnection) {
 
 	// Display regular video on browser
 	let videoRegular = document.querySelector('#cameraRegular');
-	if (streamIDs[trackIDs['videoRegular']]) {
-		let trackID = trackIDs['videoRegular'];
-		let stream = streamIDs[trackID];
+	if (midStreams[tranceiverMids['videoRegular']]) {
+		let mid = tranceiverMids['videoRegular'];
+		let stream = midStreams[mid];
 		videoRegular.srcObject = stream;
 
 		videoRegular.onloadedmetadata = function(_) {
@@ -57,7 +57,7 @@ connection.rtcPeerConnection.ondatachannel = function (event) {
 	channel.onmessage = function (event) {
 		let data = JSON.parse(event.data);
 		if (data.type === 'label') {
-			trackIDs[data.label] = data.trackID;
+			tranceiverMids[data.label] = data.mid;
 			onGetStreams(connection.rtcPeerConnection);
 		}
 	}
