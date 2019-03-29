@@ -4,7 +4,7 @@ const express = require('express');
 const opn = require('opn');
 const internalIp = require('internal-ip');
 const signal = require('./server/signal.js');
-const servo = require('./server/servo-control.js');
+const servo = require('./server/servo-device.js');
 
 // const hostname = internalIp.v4.sync();
 // const hostname = '127.0.0.1';
@@ -15,16 +15,16 @@ console.log('Welcome to the Real-Time Vision Project');
 console.log('---------------------------------------\n');
 
 /*
- * WebRTC Signaling server
- */
-const signal_port = 9000;
-signal.spin(signal_port);
-
-/*
  * Servo Control server
  */
 const servo_port = 9001;
 servo.spin(servo_port);
+
+/*
+ * WebRTC Signaling server
+ */
+const signal_port = 9000;
+signal.spin(signal_port);
 
 /*
  * Robot-connected Web-App

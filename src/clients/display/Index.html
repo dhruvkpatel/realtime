@@ -8,8 +8,13 @@
 	
     <a-scene>
 		<a-assets timeout="10000">
+			<video id="cameraRegular" muted="muted"></video>
 			<video id="camera360" muted="muted"></video>
 		</a-assets>
+
+		<a-entity camera look-controls position="0 0 0">
+			<a-video src="#cameraRegular" position="0 0 -18" height="9" width="16" rotation="3 0 0"></a-video>	
+		</a-entity>
 
 		<a-videosphere id="camera360entity" src="#camera360"></a-videosphere>
 	</a-scene>
@@ -17,6 +22,21 @@
 	<script src="webrtc-client.js"></script>
 	<script src="Index.js"></script>
 </body>
+
+<!-- <body>
+    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+	
+    <a-scene>
+		<a-assets>
+		</a-assets>
+
+		<a-cylinder position="0 10 -5" color="yellow" theta-start="50" theta-length="280" side="double"></a-cylinder>
+
+	</a-scene>
+
+	<script src="webrtc-client.js"></script>
+	<script src="Index.js"></script>
+</body> -->
 
 <!-- Use markup below to test dual-camera streaming -->
 <!-- <body>

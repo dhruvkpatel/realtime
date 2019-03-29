@@ -1,5 +1,20 @@
+/*
+ * Interface for servo device. Handles setup, including:
+ *
+ * 1. Opening serial connection with servo device
+ * 2. Opening socket connection to receive orientation goals
+ * 3. Initializing servo controller.
+ *
+ * Notes: 
+ *
+ *	Device Serial Protocol:
+ *		To set servo state, controller will send: "g,SERVO_0_ANGLE,SERVO_1_ANGLE", e.g. "g,145,20"
+ *		When device gives feedback, device will send: "f,SERVO_0_ANGLE,SERVO_1_ANGLE", e.g. "f,140,10"
+ */
+
 const SerialPort = require('serialport');
 const WebSocket = require('ws');
+const ServoController = require('./server/servo-controller.js');
 
 const ARDUINO_VENDOR_ID = '1a86';
 
@@ -10,19 +25,27 @@ exports.spin = function(port) {
 
 	let wsInit = openWebSocket(port);
 
+	let controller = startServoController();
+
 	Promise.all([serialInit, wsInit]).then((values) => {
 		let serial, socket;
 		[serial, socket] = values;
-		return pipeSocketAndSerial(serial, socket);
+		return attachControllerToStreams(controller, serial, socket);
 	})
 	.catch(error => {
 		console.error(error);
 	});
 }
 
-function pipeSocketAndSerial(serial, socket) {
+function attachControllerToStreams(controller, serial, socket) {
 	return new Promise((resolve, reject) => {
 
+		// When controller wants to update servo device, communicate update through serial
+		controller.onServoUpdate((angle0, angle1) => {
+			serial.write(`g,${angle0},${angle1}`);
+		});
+
+		// When orientation command is received from display, update controller goal
 		socket.on('message', function(message) { 
 			try {
 		    	data = JSON.parse(message); 
@@ -30,23 +53,31 @@ function pipeSocketAndSerial(serial, socket) {
 		    	reject(new Error('Invalid JSON'));
 		    } 
 
-		    switch (data.type) {
-		    	case 'control':
-		    		let message = data.control;
-		    		serial.write(message, error => {
-		    			reject(new Error('Could not write to Serial'));
-		    		});
-		    		break;
+		    if (data.type === 'orientation') {
+		    	let orientation = data.orientation;
+		    	controller.setGoal(orientation);
 		    }
 		});  
 
+		// When orientation feedback is received from servo device, 
+		// 1. Update controller state
+		// 2. Send controller's new orientation to display device
 		serial.on('data', (message) => {
 
-			// TODO confirm serial response format
-			socket.send(JSON.stringify({
-				type: 'control',
-				control: message
-			}));
+			let splitMessage = message.split(',');
+
+			if (splitMessage[0] === 'f') {
+				let angle0 = Number(splitMessage[1]);
+				let angle1 = Number(splitMessage[2]);
+
+				controller.setState(angle0, angle1);
+				let newOrientation = controller.currentOrientation;
+
+				socket.send(JSON.stringify({
+					type: 'orientation',
+					orientation: newOrientation
+				}));
+			}
 		});
 	});
 }
@@ -98,4 +129,8 @@ function openWebSocket(port) {
 		});  
 	});
 
+}
+
+function startServoController() {
+	return new ServoController();
 }

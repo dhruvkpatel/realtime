@@ -5,8 +5,8 @@ class VideoStream {
 		this.objectID = objectID;
 		this.connection = rtcConnection;
 		this.videoLabelChannel = videoLabelChannel;
-		this.rtpSender = undefined;
-		this.onTrackID = function(){};
+		this.rtpTransceiver = undefined;
+		this.onMid = function(){};
 
 		this.videoDisplay = document.querySelector(`#${this.objectID} video`);
 		this.videoSelect =  document.querySelector(`#${this.objectID} select`);
@@ -41,11 +41,6 @@ class VideoStream {
 	 *  Callback for getting camera stream once device is known
 	 */
 	getStream() {
-	 	// Remove old track if one exists
-	 	if (this.rtpSender) {
-	 		this.connection.rtcPeerConnection.removeTrack(this.rtpSender);
-	 	}
-
 	  	const constraints = {
 			audio: false,
 			video: {
@@ -73,9 +68,15 @@ class VideoStream {
 
 	    // Stream video
 	   	let track = stream.getTracks()[0];
-	   	this.rtpSender = this.connection.rtcPeerConnection.addTrack(track, stream);
+	    if (!this.rtpTransceiver) {
+	    	this.rtpTransceiver = this.connection.rtcPeerConnection.addTransceiver(track);
+	    }
+	    else {
+	    	this.rtpTransceiver.sender.replaceTrack(track);
+	    }
 
-		this.onTrackID(track.id);	
+		this.onMid(this.rtpTransceiver);	// This assumes transceiver is established before call-back. 
+									// This is fishy, but it works.
 	}
 
 	handleError(error) {

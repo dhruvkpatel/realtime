@@ -1,4 +1,5 @@
 const SIGNAL_SERVER_PORT = 9000;
+const SERVO_SERVER_PORT = 9001;
 
 // Open WebRTC connection
 const connection = new Connection({
@@ -8,44 +9,64 @@ const connection = new Connection({
 	offerOnReady: true, 
 });
 
-// Open Channel to send video data
+// Open Channel to send video labels (to distinguish between 360 & regular streams) 
 let videoLabelChannel;
 let videoLabelChannelInit = new Promise(function (resolve, reject) {
 	videoLabelChannel = connection.rtcPeerConnection.createDataChannel("Video Labels", {id: 0});
 	videoLabelChannel.onopen = resolve;
 });
 
-// let servoControlChannel;
-// let servoControlChannelInit = new Promise((resolve, reject) => {
-// 	servoControlChannel = 
-// });
+// Open channel to recieve orientation data (from display device)
+let servoControlChannelInit = new Promise((resolve, reject) => {
+	channel = connection.rtcPeerConnection.createDataChannel("Orientation", {id: 1});
+	channel.onopen = _ => {
+		resolve(channel);
+	};
+});
+
+// Open Web Socket to send orientation (to servo control server)
+let servoControlSocketInit = new Promise((resolve, reject) => {
+	let socket = new WebSocket(`ws://129.0.0.1:${SERVO_SERVER_PORT}/`);
+	socket.onopen = _ => {
+		resolve(socket);
+	};
+});
  
 // Initialize 360 Video
 let video360;
 let video360Init = new Promise(function (resolve, reject) {
 	video360 = new VideoStream('video360', 'camera360', connection);
-	video360.onTrackID = resolve;
+	video360.onMid = resolve;
 });
 
 // Initialize Regular Video
 let videoRegular;
 let videoRegularInit = new Promise(function (resolve, reject) {
 	videoRegular = new VideoStream('videoRegular', 'cameraRegular', connection);
-	videoRegular.onTrackID = resolve;
+	videoRegular.onMid = resolve;
 });
 
-function sendTrackID(video, trackID) {
+function sendVideoMid(video, mid) {
 	videoLabelChannel.send(JSON.stringify({
    		type: 'label',
    		label: video.label,
-   		trackID: trackID
+   		mid: mid
 	}));
 }
 
-Promise.all([videoLabelChannelInit, video360Init, videoRegularInit]).then((inputs) => {
-	sendTrackID(video360, inputs[1]);
-	video360.onTrackID = send360ID;
+// Send video labels once videos and video label channels are initialized
+Promise.all([videoLabelChannelInit, video360Init, videoRegularInit]).then(inputs => {
+	sendVideoMid(video360, inputs[1].mid);
+	sendVideoMid(videoRegular, inputs[2].mid)
+	video360.onMid = send360ID;
+	videoRegular.onMid = sendRegularID;
+});
 
-	sendTrackID(videoRegular, inputs[2]);
-	videoRegular.onTrackID = sendRegularID;
+// Pipe servo streams in both directions once they are initialized
+Promise.all([servoControlChannelInit, servoControlSocketInit]).then(inputs => {
+	let displayStream, servoStream;
+	[displayStream, servoStream] = inputs;
+
+	displayStream.pipeTo(servoStream);
+	servoStream.pipeTo(displayStream);
 });
