@@ -110,3 +110,11 @@ function onGotCameraOrientation(orientation) {
 setInterval(_ => {
 	setDeviceOrientation(1, 2, 3);
 }, 2000);
+
+let testSubmitButton = document.getElementById('submitButton')
+testSubmitButton.onclick = function(){
+	let x = document.getElementById('xBox').value
+	let y = document.getElementById('yBox').value
+	let z = document.getElementById('zBox').value
+	setDeviceOrientation(x,y,z)
+}
