@@ -1,6 +1,7 @@
 const SIGNAL_SERVER_PORT = 9000;
 let tranceiverMids = {};
 let orientationChannel;
+let canSendOrientation = false;
 
 const connection = new Connection({
 	room: 1,
@@ -70,10 +71,13 @@ connection.rtcPeerConnection.ondatachannel = function (event) {
 			channel.onmessage = event => {
 				let data = JSON.parse(event.data);
 				if (data.type === 'orientation') {
-					onGotCameraOrientation(data.x, data.y, data.z)
+					onGotCameraOrientation(data.orientation)
 				}
 			};
 			orientationChannel = channel;
+			orientationChannel.onopen = _ => {
+				canSendOrientation = true
+			};
 			break;
 	}
 }
@@ -86,7 +90,7 @@ connection.rtcPeerConnection.ondatachannel = function (event) {
  *    	 When unopened, it will do nothing
  */
 function setDeviceOrientation(x, y, z) {
-	if (orientationChannel) {
+	if (canSendOrientation) {
 		orientationChannel.send(JSON.stringify({
 			type: 'orientation',
 			orientation: {
@@ -98,6 +102,11 @@ function setDeviceOrientation(x, y, z) {
 	}
 }
 
-function onGotCameraOrientation(x, y, z) {
+function onGotCameraOrientation(orientation) {
+	console.log('feedback:', orientation);
 	// Do logic that requires orientation feedback here.
 }
+
+setInterval(_ => {
+	setDeviceOrientation(1, 2, 3);
+}, 2000);

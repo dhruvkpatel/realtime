@@ -1,4 +1,3 @@
-
 /*
  * Controls servo device given a goal orientation
  *
@@ -30,6 +29,12 @@ class ServoController {
 	setGoal(orientation) {
 		this.goalOrientation = orientation;
 
+	 	let angle0 = orientation.y;
+	 	let angle1 = orientation.x;
+
+	 	this._setServos(angle0, angle1);
+	 	this.setState(angle0, angle1);
+
 		// TODO
 	}
 
@@ -45,5 +50,6 @@ class ServoController {
 		// Convert to int, then send to device
 		this.servoUpdateHandler(angle0.toFixed(0), angle1.toFixed(0));
 	}
-	}
 }
+
+module.exports = ServoController;

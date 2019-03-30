@@ -26,7 +26,7 @@ let servoControlChannelInit = new Promise((resolve, reject) => {
 
 // Open Web Socket to send orientation (to servo control server)
 let servoControlSocketInit = new Promise((resolve, reject) => {
-	let socket = new WebSocket(`ws://129.0.0.1:${SERVO_SERVER_PORT}/`);
+	let socket = new WebSocket(`ws://localhost:${SERVO_SERVER_PORT}/`);
 	socket.onopen = _ => {
 		resolve(socket);
 	};
@@ -58,15 +58,24 @@ function sendVideoMid(video, mid) {
 Promise.all([videoLabelChannelInit, video360Init, videoRegularInit]).then(inputs => {
 	sendVideoMid(video360, inputs[1].mid);
 	sendVideoMid(videoRegular, inputs[2].mid)
-	video360.onMid = send360ID;
-	videoRegular.onMid = sendRegularID;
+	video360.onMid = transceiver => {
+		sendVideoMid(video360, transceiver.mid);
+	};
+	videoRegular.onMid = transceiver => {
+		sendVideoMid(videoRegular, transceiver.mid);
+	};
 });
 
 // Pipe servo streams in both directions once they are initialized
 Promise.all([servoControlChannelInit, servoControlSocketInit]).then(inputs => {
 	let displayStream, servoStream;
-	[displayStream, servoStream] = inputs;
+	[displayStream, servoStream] = inputs
 
-	displayStream.pipeTo(servoStream);
-	servoStream.pipeTo(displayStream);
+	displayStream.onmessage = event => {
+		servoStream.send(event.data);
+	};
+
+	servoStream.onmessage = event => {
+		displayStream.send(event.data);
+	};
 });

@@ -13,8 +13,11 @@
  */
 
 const SerialPort = require('serialport');
+const Readline = require('@serialport/parser-readline')
 const WebSocket = require('ws');
-const ServoController = require('./server/servo-controller.js');
+// const ServoController = require('./servo-controller.js').ServoController;
+
+const ServoController = require('./servo-controller.js');
 
 const ARDUINO_VENDOR_ID = '1a86';
 
@@ -47,23 +50,25 @@ function attachControllerToStreams(controller, serial, socket) {
 
 		// When orientation command is received from display, update controller goal
 		socket.on('message', function(message) { 
+			// console.log('Display:', message);
 			try {
 		    	data = JSON.parse(message); 
+
+		    	if (data.type === 'orientation') {
+		    		let orientation = data.orientation;
+		    		controller.setGoal(orientation);
+		    	}
 		    } catch (e) { 
 		    	reject(new Error('Invalid JSON'));
-		    } 
-
-		    if (data.type === 'orientation') {
-		    	let orientation = data.orientation;
-		    	controller.setGoal(orientation);
-		    }
+		    } 	    
 		});  
 
 		// When orientation feedback is received from servo device, 
 		// 1. Update controller state
 		// 2. Send controller's new orientation to display device
-		serial.on('data', (message) => {
-
+		const parser = serial.pipe(new Readline({ delimiter: '\r\n' }))
+		parser.on('data', message => {
+			// console.log('Arduino:', message);
 			let splitMessage = message.split(',');
 
 			if (splitMessage[0] === 'f') {
@@ -116,7 +121,7 @@ function openSerialPort(portName) {
 		  console.log('Error: ', err.message)
 		})
 
-		console.log('Servos connected.');
+		// console.log('Servos connected.');
 		resolve(serial);
 	});
 }

@@ -31,7 +31,7 @@ signal.spin(signal_port);
  * Will run on browser of robot -- attached to cameras & servos
  */
 const robot_app = express();
-const robot_hostname = '127.0.0.1';
+const robot_hostname = 'localhost';
 const robot_port = 8889;
 
 robot_app.get('/', (req, res) => {
