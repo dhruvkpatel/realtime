@@ -20,22 +20,32 @@ class ServoController {
 		this.servoUpdateHandler = (angle0, angle1) => {throw "Cannot set servo before handler is attached"};
 		this.goalOrientation = {x: undefined, y: undefined, z: undefined};
 		this.currentOrientation = {x: undefined, y: undefined, z: undefined};
+
+		this.panCenter = 80
+		this.tiltCenter = 60
+		this.panRange = 140 
+		this.tiltRange = 105
+
+		this.camera360Offset = {
+			x: 0,
+			y: -90
+		};
 	}
 
 	onServoUpdate(callback) {
 		this.servoUpdateHandler = callback;
+		this._setServos(this.panCenter, this.tiltCenter)
 	}
 
 	setGoal(orientation) {
 		this.goalOrientation = orientation;
 
-	 	let angle0 = orientation.y;
-	 	let angle1 = orientation.x;
+	 	let panAngle = 	Math.max(Math.min(this.panRange - (orientation.y/2)%360 + this.camera360Offset.y + this.panCenter, this.panRange), 0);
+	 	let tiltAngle = Math.max(Math.min((orientation.x/2)%360 + this.camera360Offset.x + this.tiltCenter, this.tiltRange), 0);
 
-	 	this._setServos(angle0, angle1);
-	 	this.setState(angle0, angle1);
+	 	this._setServos(panAngle, tiltAngle);
 
-		// TODO
+	 	console.log(`Goal: ${Math.round(orientation.y)}, ${Math.round(orientation.x)} | Servos: ${Math.round(panAngle)}, ${Math.round(tiltAngle)}`);
 	}
 
 	setState(angle0, angle1) {
@@ -48,7 +58,7 @@ class ServoController {
 
 	_setServos(angle0, angle1) {
 		// Convert to int, then send to device
-		this.servoUpdateHandler(angle0.toFixed(0), angle1.toFixed(0));
+		this.servoUpdateHandler(Math.round(angle0), Math.round(angle1));
 	}
 }
 

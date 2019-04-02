@@ -3,7 +3,7 @@ let tranceiverMids = {};
 let orientationChannel;
 let canSendOrientation = false;
 
-let rotationPollRateMS = 5
+let rotationPollRateMS = 50;
 
 const connection = new Connection({
 	room: 1,
@@ -93,7 +93,14 @@ connection.rtcPeerConnection.ondatachannel = function (event) {
  */
 function setDeviceOrientation(x, y, z) {
 	if (canSendOrientation) {
-		console.log('candy')
+		console.log(JSON.stringify({
+			type: 'orientation',
+			orientation: {
+				x: x,
+				y: y,
+				z: z
+			}
+		}));
 		orientationChannel.send(JSON.stringify({
 			type: 'orientation',
 			orientation: {
@@ -114,13 +121,13 @@ function onGotCameraOrientation(orientation) {
 // 	setDeviceOrientation(1, 2, 3);
 // }, 2000);
 
-let testSubmitButton = document.getElementById('submitButton')
-testSubmitButton.onclick = function(){
-	let x = document.getElementById('xBox').value
-	let y = document.getElementById('yBox').value
-	let z = document.getElementById('zBox').value
-	setDeviceOrientation(x,y,z)
-}
+// let testSubmitButton = document.getElementById('submitButton');
+// testSubmitButton.onclick = function(){
+// 	let x = document.getElementById('xBox').value;
+// 	let y = document.getElementById('yBox').value;
+// 	let z = document.getElementById('zBox').value;
+// 	setDeviceOrientation(x,y,z);
+// }
 
 setInterval(function(){ 
 	let rotation = document.querySelector('a-entity').getAttribute('rotation')

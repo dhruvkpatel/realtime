@@ -45,6 +45,7 @@ function attachControllerToStreams(controller, serial, socket) {
 
 		// When controller wants to update servo device, communicate update through serial
 		controller.onServoUpdate((angle0, angle1) => {
+			// console.log(`g,${angle0},${angle1}`);
 			serial.write(`g,${angle0},${angle1}`);
 		});
 
@@ -52,6 +53,7 @@ function attachControllerToStreams(controller, serial, socket) {
 		socket.on('message', function(message) { 
 			// console.log('Display:', message);
 			try {
+				console.l
 		    	data = JSON.parse(message); 
 
 		    	if (data.type === 'orientation') {
@@ -59,6 +61,7 @@ function attachControllerToStreams(controller, serial, socket) {
 		    		controller.setGoal(orientation);
 		    	}
 		    } catch (e) { 
+		    	reject(e);
 		    	reject(new Error('Invalid JSON'));
 		    } 	    
 		});  
@@ -119,7 +122,11 @@ function openSerialPort(portName) {
 
 		serial.on('error', function(err) {
 		  console.log('Error: ', err.message)
-		})
+		});
+
+		serial.on('close', function(err) {
+			console.log('Error: ', err.message);
+		});
 
 		// console.log('Servos connected.');
 		resolve(serial);
