@@ -1,5 +1,9 @@
 const SIGNAL_SERVER_PORT = 9000;
 let tranceiverMids = {};
+let orientationChannel;
+let canSendOrientation = false;
+
+let rotationPollRateMS = 50;
 
 const connection = new Connection({
 	room: 1,
@@ -54,11 +58,78 @@ connection.rtcPeerConnection.ontrack = function (event) {
 
 connection.rtcPeerConnection.ondatachannel = function (event) {
 	let channel = event.channel;
-	channel.onmessage = function (event) {
-		let data = JSON.parse(event.data);
-		if (data.type === 'label') {
-			tranceiverMids[data.label] = data.mid;
-			onGetStreams(connection.rtcPeerConnection);
-		}
+
+	switch (channel.label) {
+		case 'Video Labels':
+			channel.onmessage = event => {
+				let data = JSON.parse(event.data);
+				if (data.type === 'label') {
+					tranceiverMids[data.label] = data.mid;
+					onGetStreams(connection.rtcPeerConnection);
+				}
+			}
+			break;
+		case 'Orientation':
+			channel.onmessage = event => {
+				let data = JSON.parse(event.data);
+				if (data.type === 'orientation') {
+					onGotCameraOrientation(data.orientation)
+				}
+			};
+			orientationChannel = channel;
+			orientationChannel.onopen = _ => {
+				canSendOrientation = true
+			};
+			break;
 	}
 }
+
+/*
+ * Calling this sends orientation of the display device to the robot
+ * 
+ * Note: When orientation data channel is open, 
+ * 		 it will send desired orientation through.
+ *    	 When unopened, it will do nothing
+ */
+function setDeviceOrientation(x, y, z) {
+	if (canSendOrientation) {
+		console.log(JSON.stringify({
+			type: 'orientation',
+			orientation: {
+				x: x,
+				y: y,
+				z: z
+			}
+		}));
+		orientationChannel.send(JSON.stringify({
+			type: 'orientation',
+			orientation: {
+				x: x,
+				y: y,
+				z: z
+			}
+		}));
+	}
+}
+
+function onGotCameraOrientation(orientation) {
+	console.log('feedback:', orientation);
+	// Do logic that requires orientation feedback here.
+}
+
+// setInterval(_ => {
+// 	setDeviceOrientation(1, 2, 3);
+// }, 2000);
+
+// let testSubmitButton = document.getElementById('submitButton');
+// testSubmitButton.onclick = function(){
+// 	let x = document.getElementById('xBox').value;
+// 	let y = document.getElementById('yBox').value;
+// 	let z = document.getElementById('zBox').value;
+// 	setDeviceOrientation(x,y,z);
+// }
+
+setInterval(function(){ 
+	let rotation = document.querySelector('a-entity').getAttribute('rotation')
+	setDeviceOrientation(rotation['x'],rotation['y'],rotation['z'])
+ }, rotationPollRateMS);

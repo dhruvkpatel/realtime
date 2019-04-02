@@ -6,7 +6,7 @@ class VideoStream {
 		this.connection = rtcConnection;
 		this.videoLabelChannel = videoLabelChannel;
 		this.rtpTransceiver = undefined;
-		this.onTrackID = function(){};
+		this.onMid = function(){};
 
 		this.videoDisplay = document.querySelector(`#${this.objectID} video`);
 		this.videoSelect =  document.querySelector(`#${this.objectID} select`);
