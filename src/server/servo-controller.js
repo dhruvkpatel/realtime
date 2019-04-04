@@ -21,31 +21,58 @@ class ServoController {
 		this.goalOrientation = {x: undefined, y: undefined, z: undefined};
 		this.currentOrientation = {x: undefined, y: undefined, z: undefined};
 
-		this.panCenter = 80
-		this.tiltCenter = 60
-		this.panRange = 140 
-		this.tiltRange = 105
-
-		this.camera360Offset = {
-			x: 0,
-			y: -90
+		this.panLimits = {
+			center: 80,
+			min: 30,
+			max: 129
 		};
+
+		this.tiltLimits = {
+			center: 60,
+			min: 27,
+			max: 83,
+		};
+
+		this.servoStretching = 0.55;
 	}
 
 	onServoUpdate(callback) {
 		this.servoUpdateHandler = callback;
-		this._setServos(this.panCenter, this.tiltCenter)
+		this.setGoal({x: 0, y: 0});
 	}
 
 	setGoal(orientation) {
-		this.goalOrientation = orientation;
+		function mod180(x) {
+			while (x >= 180) {
+				x -= 360;
+			}
+			while (x < -180) {
+				x += 360;
+			}
+			return x;
+		}
 
-	 	let panAngle = 	Math.max(Math.min(this.panRange - (orientation.y/2)%360 + this.camera360Offset.y + this.panCenter, this.panRange), 0);
-	 	let tiltAngle = Math.max(Math.min((orientation.x/2)%360 + this.camera360Offset.x + this.tiltCenter, this.tiltRange), 0);
+		function limitTo(x, min, max) {
+			if (x > max) {
+				return max;
+			}
+			else if (x < min) {
+				return min;
+			}
+			return x;
+		}
+
+		this.goalOrientation = {
+			x: mod180(orientation.x),
+			y: mod180(orientation.y)
+		}
+
+		let panAngle = limitTo(this.panLimits.center - (this.goalOrientation.y) * this.servoStretching, this.panLimits.min, this.panLimits.max);
+		let tiltAngle = limitTo(this.tiltLimits.center + (this.goalOrientation.x) * this.servoStretching, this.tiltLimits.min, this.tiltLimits.max);
 
 	 	this._setServos(panAngle, tiltAngle);
 
-	 	console.log(`Goal: ${Math.round(orientation.y)}, ${Math.round(orientation.x)} | Servos: ${Math.round(panAngle)}, ${Math.round(tiltAngle)}`);
+	 	// console.log(`Goal: ${Math.round(this.goalOrientation.y)}, ${Math.round(this.goalOrientation.x)} | Servos: ${Math.round(panAngle)}, ${Math.round(tiltAngle)}`);
 	}
 
 	setState(angle0, angle1) {

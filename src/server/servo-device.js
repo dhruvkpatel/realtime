@@ -58,6 +58,7 @@ function attachControllerToStreams(controller, serial, socket) {
 
 		    	if (data.type === 'orientation') {
 		    		let orientation = data.orientation;
+		    		// console.log(serial.isOpen);
 		    		controller.setGoal(orientation);
 		    	}
 		    } catch (e) { 
@@ -69,7 +70,8 @@ function attachControllerToStreams(controller, serial, socket) {
 		// When orientation feedback is received from servo device, 
 		// 1. Update controller state
 		// 2. Send controller's new orientation to display device
-		const parser = serial.pipe(new Readline({ delimiter: '\r\n' }))
+		const parser = new Readline();
+		serial.pipe(parser);
 		parser.on('data', message => {
 			// console.log('Arduino:', message);
 			let splitMessage = message.split(',');
