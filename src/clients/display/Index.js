@@ -93,14 +93,6 @@ connection.rtcPeerConnection.ondatachannel = function (event) {
  */
 function setDeviceOrientation(x, y, z) {
 	if (canSendOrientation) {
-		console.log(JSON.stringify({
-			type: 'orientation',
-			orientation: {
-				x: x,
-				y: y,
-				z: z
-			}
-		}));
 		orientationChannel.send(JSON.stringify({
 			type: 'orientation',
 			orientation: {
@@ -117,19 +109,7 @@ function onGotCameraOrientation(orientation) {
 	// Do logic that requires orientation feedback here.
 }
 
-// setInterval(_ => {
-// 	setDeviceOrientation(1, 2, 3);
-// }, 2000);
-
-// let testSubmitButton = document.getElementById('submitButton');
-// testSubmitButton.onclick = function(){
-// 	let x = document.getElementById('xBox').value;
-// 	let y = document.getElementById('yBox').value;
-// 	let z = document.getElementById('zBox').value;
-// 	setDeviceOrientation(x,y,z);
-// }
-
 setInterval(function(){ 
-	let rotation = document.querySelector('a-entity').getAttribute('rotation')
+	let rotation = document.querySelector('#mainCam').getAttribute('rotation')
 	setDeviceOrientation(rotation['x'],rotation['y'],rotation['z'])
  }, rotationPollRateMS);

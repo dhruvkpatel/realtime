@@ -79,6 +79,10 @@ display_app.get('/Index.js', (req, res) => {
 	res.sendFile(root + '/clients/display/Index.js');
 });
 
+display_app.get('/preload.js', (req, res) => {
+	res.sendFile(root + '/clients/display/preload.js');
+});
+
 display_app.get('/webrtc-client.js', (req, res) => {
 	res.sendFile(root + '/clients/webrtc-client.js');
 });
