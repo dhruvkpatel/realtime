@@ -1,72 +1,55 @@
-console.log("I ran")
-
 AFRAME.registerComponent('rotation-reader', {
-  init: function () {
-    let sceneEl = this.el;
-    this.el.addEventListener('click', function (evt) {
-      let el = document.querySelector("a-cylinder ")
-      if(el.getAttribute("color") == "#FFC65D"){
-        el.setAttribute("color","green")
-      }
-      else{
-        el.setAttribute("color","#FFC65D")
-      }
-    });
-
-    this.el.addEventListener('trackpadchanged', function (evt) {
-      let el = document.querySelector("a-cylinder ")
-      if(el.getAttribute("color") == "#FFC65D"){
-        el.setAttribute("color","white")
-      }
-      else{
-        el.setAttribute("color","#FFC65D")
-      }
-    });
-
-    this.el.addEventListener('triggerchanged', function (evt) {
-      let el = document.querySelector("a-cylinder ")
-      if(el.getAttribute("color") == "#FFC65D"){
-        el.setAttribute("color","red")
-      }
-      else{
-        el.setAttribute("color","#FFC65D")
-      }
-    });
+    init: function () {
+      this.el.addEventListener('triggerdown', (evt) => toggleView(evt))
+    },
   
-  },
-
-  trackpadchanged: function () {
+    tick: function () {
       var rotation = this.el.getAttribute('rotation');
-      console.log(rotation)
-
-      if(el.getAttribute("color") == "#FFC65D"){
-        el.setAttribute("color","white")
-      }
-      else{
-        el.setAttribute("color","#FFC65D")
-      }
-  },
-
-  triggerchanged: function () {
-    var rotation = this.el.getAttribute('rotation');
-    console.log(rotation)
-
-    if(el.getAttribute("color") == "#FFC65D"){
-      el.setAttribute("color","red")
+      
+      let el = document.getElementById('mainCam')
+      let cam = el.querySelectorAll(":scope > a-video")[0];
+      },
+  });
+  
+  
+  const toggleView = (evt) => {
+    if(typeof this.code == 'undefined'){
+      this.VIEW_STANDARD= "Standard View"
+      this.VIEW_ZOOMED = "Zoomed View"
+      this.VIEW_360 = "360 View"
+      this.options = [this.VIEW_STANDARD, this.VIEW_ZOOMED, this.VIEW_360]
+      this.code = this.options[this.options.length-1]
+      this.ZOOM_SCALE_FACTOR = 3
+    }
+    if(this.code  === options[options.length-1]){
+      this.code = options[0]
     }
     else{
-      el.setAttribute("color","#FFC65D")
+      this.code = options[options.indexOf(this.code)+1]
     }
-},
-
-  // tick: function () {
-  //   var rotation = this.el.getAttribute('rotation');
-  //   console.log(rotation)
-  //   },
-});
-
-
-const toggleView = (evt) => {
-   
-  return x * y 
- };
+  
+    let el = document.getElementById('mainCam')
+    let cam = el.querySelectorAll(":scope > a-video")[0];
+    const curHeight = ()=>cam.getAttribute("height")
+    const curWidth = ()=>cam.getAttribute("width")
+    console.log(this.code)
+    switch (this.code) {
+      case this.VIEW_STANDARD:
+        cam.setAttribute("visible",true)
+        cam.setAttribute("height", curHeight()*this.ZOOM_SCALE_FACTOR)
+        cam.setAttribute("width", curWidth()*this.ZOOM_SCALE_FACTOR)
+        break;
+      case this.VIEW_ZOOMED:
+        cam.setAttribute("height", curHeight()/this.ZOOM_SCALE_FACTOR)
+        cam.setAttribute("width", curWidth()/this.ZOOM_SCALE_FACTOR)
+        break;
+      case this.VIEW_360:
+        cam.setAttribute("visible", false)
+        break;
+    }
+  
+  
+    //cam.setAttribute('height', 15)
+    //if(this.code == )
+   };
+  
