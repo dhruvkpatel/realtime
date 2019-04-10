@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 
 <head>
-		<script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+		<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
 </head>
 
 <body>
 	<script src = "preload.js"></script>
-
     <a-scene rotation-reader>
+
+
+		<a-entity oculus-go-controls></a-entity>
 
 		<a-assets timeout="10000">
 			<video id="cameraRegular" muted="muted"></video>
 			<video id="camera360" muted="muted"></video>
 		</a-assets>
 
-		<a-entity camera look-controls rotation-reader id = "mainCam" position="0 0 0">
+		<a-entity camera look-controls id = "mainCam" position="0 0 0">
+			  <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+
 			<a-video src="#cameraRegular" position="0 0 -18" height="9" width="16" rotation="3 0 0"></a-video>	
 		</a-entity>
 
