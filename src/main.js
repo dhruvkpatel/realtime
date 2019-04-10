@@ -5,10 +5,13 @@ const opn = require('opn');
 const internalIp = require('internal-ip');
 const signal = require('./server/signal.js');
 const servo = require('./server/servo-device.js');
+const path = require('path');
 
 // const hostname = internalIp.v4.sync();
 // const hostname = '127.0.0.1';
-const root = __dirname;
+
+const root = path.resolve('src');
+const img_root = path.resolve('img');
 
 console.log('---------------------------------------');
 console.log('Welcome to the Real-Time Vision Project');
@@ -85,6 +88,11 @@ display_app.get('/preload.js', (req, res) => {
 
 display_app.get('/webrtc-client.js', (req, res) => {
 	res.sendFile(root + '/clients/webrtc-client.js');
+});
+
+
+display_app.get('/img/arrow_indicator.png', (req, res) => {
+	res.sendFile(img_root + '/arrow_indicator.png');
 });
 
 display_app.listen(display_port, display_hostname, () => {

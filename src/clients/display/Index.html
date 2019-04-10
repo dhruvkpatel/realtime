@@ -9,13 +9,20 @@
 
     <a-scene rotation-reader>
 
+    	<a-entity oculus-go-controls></a-entity>
+
 		<a-assets timeout="10000">
 			<video id="cameraRegular" muted="muted"></video>
 			<video id="camera360" muted="muted"></video>
+			<img id="arrow_indicator" src="img/arrow_indicator.png"></img>
 		</a-assets>
 
 		<a-entity camera look-controls rotation-reader id = "mainCam" position="0 0 0">
-			<a-video src="#cameraRegular" position="0 0 -18" height="9" width="16" rotation="3 0 0"></a-video>	
+			<a-video src="#cameraRegular" position="0 0 -18" height="9" width="16" rotation="3 0 0"></a-video>
+
+			<a-image id="arrow_small_left" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 -17"></a-image>
+			<a-image id="arrow_small_right" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 -17"></a-image>
+
 		</a-entity>
 
 		<a-videosphere id="camera360entity" src="#camera360" rotation="0 90 0"></a-videosphere>

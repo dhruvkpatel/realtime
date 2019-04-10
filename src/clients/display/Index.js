@@ -5,6 +5,8 @@ let canSendOrientation = false;
 
 let rotationPollRateMS = 50;
 
+let goControls = document.querySelector(selector)
+
 const connection = new Connection({
 	room: 1,
 	hostname: window.location.hostname,
