@@ -1,30 +1,38 @@
 <!DOCTYPE html>
 
 <head>
+		<script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
 </head>
 
 <body>
-		<!-- <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script> -->
-		<script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
 
-		<form id="inputBox">
-				X: <input type="number" name="_x" id = 'xBox'>
-				Y: <input type="number" name="_y" id = 'yBox'>
-				Z: <input type="number" name="_z" id = 'zBox'>
-				<button id ='submitButton'>Submit</button>					
-		</form>
-	
-    <a-scene>
+
+		<script src = "preload.js"></script>
+		<!-- <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script> -->
+    <a-scene rotation-reader>
+
+
+		<a-entity oculus-go-controls></a-entity>
+
+
 		<a-assets timeout="10000">
 			<video id="cameraRegular" muted="muted"></video>
 			<video id="camera360" muted="muted"></video>
 		</a-assets>
 
-		<a-entity camera look-controls position="0 0 0">
-			<a-video src="#cameraRegular" position="0 0 -18" height="9" width="16" rotation="3 0 0"></a-video>	
+		<a-entity camera childA look-controls rotation-reader id = "mainCam" position="0 0 0">
+
+				<!-- <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder> -->
+
+			<a-video src="#cameraRegular" childB position="0 0 -18" height="9" width="16" rotation="3 0 0"></a-video>	
+		
+			<!-- <a-entity id = "lol" geometry="primitive: plane; height: 0.2; width: 0.2" position="0 0 -1"
+			material="color: gray; opacity: 0.5"></a-entity>
+		 -->
 		</a-entity>
 
 		<a-videosphere id="camera360entity" src="#camera360"></a-videosphere>
+
 	</a-scene>
 
 	<script src="webrtc-client.js"></script>
