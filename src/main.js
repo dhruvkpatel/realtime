@@ -15,7 +15,7 @@ const img_root = path.resolve('img');
 
 console.log('---------------------------------------');
 console.log('Welcome to the Real-Time Vision Project');
-console.log('---------------------------------------\n');
+console.log('-------------------------------`--------\n');
 
 /*
  * Servo Control server
