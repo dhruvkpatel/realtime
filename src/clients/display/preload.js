@@ -1,6 +1,8 @@
 AFRAME.registerComponent('rotation-reader', {
     init: function () {
       this.el.addEventListener('triggerdown', (evt) => toggleView(evt))
+      this.el.addEventListener('click', (evt) => toggleView(evt))
+      adjustArrowsToView();
     },
   
     tick: function () {
@@ -19,7 +21,7 @@ AFRAME.registerComponent('rotation-reader', {
       this.VIEW_360 = "360 View"
       this.options = [this.VIEW_STANDARD, this.VIEW_ZOOMED, this.VIEW_360]
       this.code = this.options[this.options.length-1]
-      this.ZOOM_SCALE_FACTOR = 3
+      this.ZOOM_SCALE_FACTOR = 2.5
     }
     if(this.code  === options[options.length-1]){
       this.code = options[0]
@@ -29,10 +31,9 @@ AFRAME.registerComponent('rotation-reader', {
     }
   
     let el = document.getElementById('mainCam')
-    let cam = el.querySelectorAll(":scope > a-video")[0];
+    let cam = el.querySelectorAll(":scope a-video")[0];
     const curHeight = ()=>cam.getAttribute("height")
     const curWidth = ()=>cam.getAttribute("width")
-    console.log(this.code)
     switch (this.code) {
       case this.VIEW_STANDARD:
         cam.setAttribute("visible",true)
@@ -47,9 +48,48 @@ AFRAME.registerComponent('rotation-reader', {
         cam.setAttribute("visible", false)
         break;
     }
-  
-  
-    //cam.setAttribute('height', 15)
-    //if(this.code == )
+    adjustArrowsToView();
+
    };
-  
+
+function adjustArrowsToView() {
+
+  let el = document.getElementById('mainCam')
+  let cam = el.querySelectorAll(":scope a-video")[0];
+  let view_height = cam.getAttribute("height");
+  let view_width = cam.getAttribute("width");
+
+  console.log(view_width, view_height);
+
+  let arrow_left = document.querySelector("#arrow_left");
+  let arrow_right = document.querySelector("#arrow_right");
+  let arrow_down = document.querySelector("#arrow_down");
+  let arrow_up = document.querySelector("#arrow_up");
+
+  function offsetArrow(arrow, x, y) {
+    let default_pos = arrow.getAttribute("position");    
+    let new_pos = {
+      x: x,
+      y: y,
+      z: default_pos.z
+    };
+    arrow.setAttribute("position", new_pos);
+  }
+
+  const EDGE_OFFSET_SCALE = 1.5;
+
+  function getHorizontalOffset(arrow) {
+    let arrow_width = arrow.getAttribute("width");
+    return view_width/2 - ((arrow_width/2) * EDGE_OFFSET_SCALE);
+  }
+
+  function getVerticalOffset(arrow) {
+    let arrow_width = arrow.getAttribute("width");
+    return view_height/2  - ((arrow_width/2) * EDGE_OFFSET_SCALE);
+  }
+
+  offsetArrow(arrow_left, -getHorizontalOffset(arrow_left), 0);
+  offsetArrow(arrow_right, getHorizontalOffset(arrow_right), 0);
+  offsetArrow(arrow_down, 0, -getVerticalOffset(arrow_down));
+  offsetArrow(arrow_up, 0, getVerticalOffset(arrow_up), 0);
+}

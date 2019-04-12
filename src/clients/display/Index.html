@@ -17,21 +17,21 @@
 		</a-assets>
 
 		<a-entity camera look-controls rotation-reader id = "mainCam" position="0 0 0">
-			<a-video src="#cameraRegular" position="0 0 -18" height="9" width="16" rotation="3 0 0"></a-video>
 
-			<a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-
-			<a-image id="arrow_left" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 -17" rotation="0 0 0"></a-image>
-			<a-image id="arrow_right" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 -17" rotation="0 0 180"></a-image>
-			<a-image id="arrow_down" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 -17" rotation="0 0 -90"></a-image>
-			<a-image id="arrow_up" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 -17" rotation="0 0 90"></a-image>
-
+			<a-entity id="screen" position="0 0 -18" rotation="3 0 0">
+				<a-video src="#cameraRegular" height="9" width="16"></a-video>
+				<a-image id="arrow_left" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 0.01" rotation="0 0 0"></a-image>
+				<a-image id="arrow_right" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 0.01" rotation="0 0 180"></a-image>
+				<a-image id="arrow_down" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 0.01" rotation="0 0 90"></a-image>
+				<a-image id="arrow_up" width=1.5 height=1.5 src="#arrow_indicator" position="0 0 0.01" rotation="0 0 -90"></a-image>
+			</a-entity>
+			
+			<!-- <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder> -->
 		</a-entity>
 
 		<a-videosphere id="camera360entity" src="#camera360" rotation="0 90 0"></a-videosphere>
 
 	</a-scene>
-
 	<script src="webrtc-client.js"></script>
 	<script src="Index.js"></script>
 </body>
