@@ -1,0 +1,16 @@
+{
+    "servoStretching": 0.55,
+    "panLimits" : {
+        "center": 80,
+        "min": 30,
+        "max": 129
+    },
+    "tiltLimits" : {
+        "center": 60,
+        "min": 27,
+        "max": 83
+    }
+   
+}
+
+

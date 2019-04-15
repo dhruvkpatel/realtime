@@ -4,15 +4,7 @@ AFRAME.registerComponent('rotation-reader', {
       this.el.addEventListener('click', (evt) => toggleView(evt))
       adjustArrowsToView();
     },
-  
-    tick: function () {
-      var rotation = this.el.getAttribute('rotation');
-      
-      let el = document.getElementById('mainCam')
-      let cam = el.querySelectorAll(":scope > a-video")[0];
-      },
   });
-  
   
   const toggleView = (evt) => {
     if(typeof this.code == 'undefined'){
@@ -58,9 +50,6 @@ function adjustArrowsToView() {
   let cam = el.querySelectorAll(":scope a-video")[0];
   let view_height = cam.getAttribute("height");
   let view_width = cam.getAttribute("width");
-
-  console.log(view_width, view_height);
-
   let arrow_left = document.querySelector("#arrow_left");
   let arrow_right = document.querySelector("#arrow_right");
   let arrow_down = document.querySelector("#arrow_down");

@@ -2,7 +2,6 @@ const SIGNAL_SERVER_PORT = 9000;
 let tranceiverMids = {};
 let orientationChannel;
 let canSendOrientation = false;
-
 let rotationPollRateMS = 50;
 
 const connection = new Connection({
@@ -109,7 +108,71 @@ function onGotCameraOrientation(orientation) {
 	// Do logic that requires orientation feedback here.
 }
 
-setInterval(function(){ 
+
+ const adjustArrowsOpacity = (rotation) => {
+	servoParams = {
+		"servoStretching": 0.55,
+		"panLimits" : {
+			"center": 80,
+			"min": 30,
+			"max": 129
+		},
+		"tiltLimits" : {
+			"center": 60,
+			"min": 27,
+			"max": 83
+		}
+	  }
+	  
+    let arrow_left = document.querySelector("#arrow_left");
+    let arrow_right = document.querySelector("#arrow_right");
+    let arrow_down = document.querySelector("#arrow_down");
+    let arrow_up = document.querySelector("#arrow_up");
+
+    let normalizedtilt = rotation.x + servoParams.tiltLimits.center
+    let normalizedPan = (rotation.y + servoParams.panLimits.center) % 360
+    normalizedPan = normalizedPan < 0 ? normalizedPan + 360 : normalizedPan
+
+    const dist = (a,b) => Math.abs(a-b)
+
+    let arrow_left_opacity = 0
+    let arrow_right_opacity = 0
+    let arrow_down_opacity = 0
+    let arrow_up_opacity = 0
+    const maxOpacityOffset = 50
+    
+    if(normalizedtilt < servoParams.tiltLimits.min){ 
+		let delta = dist(normalizedtilt, servoParams.tiltLimits.min)
+		arrow_down_opacity = delta > maxOpacityOffset ? 1 : delta/maxOpacityOffset
+    }
+    
+    if(normalizedtilt > servoParams.tiltLimits.max){
+		let delta = dist(normalizedtilt, servoParams.tiltLimits.max)
+		arrow_up_opacity = delta > maxOpacityOffset ? 1 : delta/maxOpacityOffset
+	}
+
+	if(normalizedPan > servoParams.panLimits.max || normalizedPan < servoParams.panLimits.min){
+		let deltaMin = Math.min(dist(normalizedPan, servoParams.panLimits.min), dist(normalizedPan - 360, servoParams.panLimits.min))
+		
+		let deltaMax = Math.min(dist(normalizedPan, servoParams.panLimits.max), dist(normalizedPan + 360, servoParams.panLimits.max))
+
+		if(deltaMin < deltaMax){
+			arrow_right_opacity = deltaMin > maxOpacityOffset ? 1 : deltaMin/maxOpacityOffset
+		}
+		else{
+			arrow_left_opacity = deltaMax > maxOpacityOffset ? 1 : deltaMax/maxOpacityOffset
+		}
+	}
+    arrow_down.setAttribute('opacity', arrow_down_opacity)
+	arrow_up.setAttribute('opacity', arrow_up_opacity)
+	arrow_left.setAttribute('opacity', arrow_left_opacity)
+	arrow_right.setAttribute('opacity', arrow_right_opacity)
+  }
+
+  setInterval(function(){ 
 	let rotation = document.querySelector('#mainCam').getAttribute('rotation')
 	setDeviceOrientation(rotation['x'],rotation['y'],rotation['z'])
+	adjustArrowsOpacity(rotation)
  }, rotationPollRateMS);
+
+
