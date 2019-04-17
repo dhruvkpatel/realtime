@@ -4,6 +4,13 @@ let orientationChannel;
 let canSendOrientation = false;
 let rotationPollRateMS = 50;
 
+
+// Replace ./data.json with your JSON feed
+const getJSON = (fileName)=> fetch(fileName).then(response => {
+  return response.json();
+})
+const servoParamsPromise = getJSON("ServoParameters.json")
+
 const connection = new Connection({
 	room: 1,
 	hostname: window.location.hostname,
@@ -109,21 +116,8 @@ function onGotCameraOrientation(orientation) {
 }
 
 
- const adjustArrowsOpacity = (rotation) => {
-	servoParams = {
-		"servoStretching": 0.55,
-		"panLimits" : {
-			"center": 80,
-			"min": 30,
-			"max": 129
-		},
-		"tiltLimits" : {
-			"center": 60,
-			"min": 27,
-			"max": 83
-		}
-	  }
-	  
+ const adjustArrowsOpacity = (rotation, servoParams) => {
+
     let arrow_left = document.querySelector("#arrow_left");
     let arrow_right = document.querySelector("#arrow_right");
     let arrow_down = document.querySelector("#arrow_down");
@@ -163,16 +157,17 @@ function onGotCameraOrientation(orientation) {
 			arrow_left_opacity = deltaMax > maxOpacityOffset ? 1 : deltaMax/maxOpacityOffset
 		}
 	}
-    arrow_down.setAttribute('opacity', arrow_down_opacity)
+  arrow_down.setAttribute('opacity', arrow_down_opacity)
 	arrow_up.setAttribute('opacity', arrow_up_opacity)
 	arrow_left.setAttribute('opacity', arrow_left_opacity)
 	arrow_right.setAttribute('opacity', arrow_right_opacity)
   }
 
-  setInterval(function(){ 
-	let rotation = document.querySelector('#mainCam').getAttribute('rotation')
-	setDeviceOrientation(rotation['x'],rotation['y'],rotation['z'])
-	adjustArrowsOpacity(rotation)
- }, rotationPollRateMS);
+  setInterval(()=>{ 
+			let rotation = document.querySelector('#mainCam').getAttribute('rotation')
+			setDeviceOrientation(rotation['x'],rotation['y'],rotation['z'])
+			servoParamsPromise.then(servoParams => {adjustArrowsOpacity(rotation,servoParams)})
+		},
+		rotationPollRateMS);
 
 
