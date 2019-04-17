@@ -11,7 +11,7 @@ AFRAME.registerComponent('rotation-reader', {
       this.VIEW_STANDARD= "Standard View"
       this.VIEW_ZOOMED = "Zoomed View"
       this.VIEW_360 = "360 View"
-      this.options = [this.VIEW_STANDARD, this.VIEW_ZOOMED, this.VIEW_360]
+      this.options = [this.VIEW_ZOOMED, this.VIEW_STANDARD, this.VIEW_360]
       this.code = this.options[this.options.length-1]
       this.ZOOM_SCALE_FACTOR = 1.75
     }
@@ -26,23 +26,26 @@ AFRAME.registerComponent('rotation-reader', {
     const cam = el.querySelectorAll(":scope a-video")[0];
     const videosphere = document.getElementById("camera360entity")
     const arrows = document.querySelectorAll('.directionalArrow')
+    const sky = document.getElementById("sky")
     const curHeight = ()=>cam.getAttribute("height")
     const curWidth = ()=>cam.getAttribute("width")
     switch (this.code) {
       case this.VIEW_STANDARD:
+        videosphere.setAttribute("visible",true)
+        cam.setAttribute("height", curHeight()/this.ZOOM_SCALE_FACTOR)
+        cam.setAttribute("width", curWidth()/this.ZOOM_SCALE_FACTOR)
+        break;
+      case this.VIEW_ZOOMED:
+        sky.setAttribute("visible",true)
         cam.setAttribute("visible",true)
+        videosphere.setAttribute("visible",false)
         arrows.forEach((node) => {node.setAttribute("visible",true)});
         cam.setAttribute("height", curHeight()*this.ZOOM_SCALE_FACTOR)
         cam.setAttribute("width", curWidth()*this.ZOOM_SCALE_FACTOR)
         break;
-      case this.VIEW_ZOOMED:
-        cam.setAttribute("height", curHeight()/this.ZOOM_SCALE_FACTOR)
-        cam.setAttribute("width", curWidth()/this.ZOOM_SCALE_FACTOR)
-        videosphere.setAttribute("visible",false)
-        break;
       case this.VIEW_360:
-        videosphere.setAttribute("visible",true)
         cam.setAttribute("visible", false)
+        sky.setAttribute("false",true)
         arrows.forEach((node) => {node.setAttribute("visible",false)});
         break;
     }
