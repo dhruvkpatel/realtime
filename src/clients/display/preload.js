@@ -24,6 +24,7 @@ AFRAME.registerComponent('rotation-reader', {
   
     const el = document.getElementById('mainCam')
     const cam = el.querySelectorAll(":scope a-video")[0];
+    const videosphere = document.getElementById("camera360entity")
     const arrows = document.querySelectorAll('.directionalArrow')
     const curHeight = ()=>cam.getAttribute("height")
     const curWidth = ()=>cam.getAttribute("width")
@@ -37,8 +38,10 @@ AFRAME.registerComponent('rotation-reader', {
       case this.VIEW_ZOOMED:
         cam.setAttribute("height", curHeight()/this.ZOOM_SCALE_FACTOR)
         cam.setAttribute("width", curWidth()/this.ZOOM_SCALE_FACTOR)
+        videosphere.setAttribute("visible",false)
         break;
       case this.VIEW_360:
+        videosphere.setAttribute("visible",true)
         cam.setAttribute("visible", false)
         arrows.forEach((node) => {node.setAttribute("visible",false)});
         break;

@@ -90,6 +90,9 @@ display_app.get('/webrtc-client.js', (req, res) => {
 	res.sendFile(root + '/clients/webrtc-client.js');
 });
 
+display_app.get('/ServoParameters.json', (req, res) => {
+	res.sendFile(root + '/Utils/ServoParameters.json');
+});
 
 display_app.get('/img/arrow_indicator.png', (req, res) => {
 	res.sendFile(img_root + '/arrow_indicator.png');
