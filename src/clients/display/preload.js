@@ -13,7 +13,7 @@ AFRAME.registerComponent('rotation-reader', {
       this.VIEW_360 = "360 View"
       this.options = [this.VIEW_STANDARD, this.VIEW_ZOOMED, this.VIEW_360]
       this.code = this.options[this.options.length-1]
-      this.ZOOM_SCALE_FACTOR = 2.5
+      this.ZOOM_SCALE_FACTOR = 1.75
     }
     if(this.code  === options[options.length-1]){
       this.code = options[0]
@@ -22,13 +22,15 @@ AFRAME.registerComponent('rotation-reader', {
       this.code = options[options.indexOf(this.code)+1]
     }
   
-    let el = document.getElementById('mainCam')
-    let cam = el.querySelectorAll(":scope a-video")[0];
+    const el = document.getElementById('mainCam')
+    const cam = el.querySelectorAll(":scope a-video")[0];
+    const arrows = document.querySelectorAll('.directionalArrow')
     const curHeight = ()=>cam.getAttribute("height")
     const curWidth = ()=>cam.getAttribute("width")
     switch (this.code) {
       case this.VIEW_STANDARD:
         cam.setAttribute("visible",true)
+        arrows.forEach((node) => {node.setAttribute("visible",true)});
         cam.setAttribute("height", curHeight()*this.ZOOM_SCALE_FACTOR)
         cam.setAttribute("width", curWidth()*this.ZOOM_SCALE_FACTOR)
         break;
@@ -38,6 +40,7 @@ AFRAME.registerComponent('rotation-reader', {
         break;
       case this.VIEW_360:
         cam.setAttribute("visible", false)
+        arrows.forEach((node) => {node.setAttribute("visible",false)});
         break;
     }
     adjustArrowsToView();

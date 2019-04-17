@@ -28,10 +28,10 @@ class ServoController {
 		};
 
 		this.tiltLimits = {
-			center: 60,
-			min: 27,
-			max: 83,
-		};
+	        center: 73,
+	        min: 30,
+	        max: 105
+    	};
 
 		this.servoStretching = 0.55;
 	}
