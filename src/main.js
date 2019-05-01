@@ -1,3 +1,16 @@
+/**
+ *	Main entry point for all Servers. 
+ *	Intended to run locally on computer attached to camera system.
+ * 
+ * 	Runs the following servers in parallel:
+ *  	- Servo Control Server (servo-device.js)
+ * 		- WebRTC Signaling Server (signal.js)
+ * 		- Web Server for robot-connected app (clients/robot/)
+ * 		- Web Server for VR display app (clients/display/)
+ *	
+ *	@author: Dhruv K. Patel
+ */
+
 const http = require('http');
 const fs = require('fs');
 const express = require('express');
@@ -7,15 +20,12 @@ const signal = require('./server/signal.js');
 const servo = require('./server/servo-device.js');
 const path = require('path');
 
-// const hostname = internalIp.v4.sync();
-// const hostname = '127.0.0.1';
-
 const root = path.resolve('src');
 const img_root = path.resolve('img');
 
 console.log('---------------------------------------');
 console.log('Welcome to the Real-Time Vision Project');
-console.log('-------------------------------`--------\n');
+console.log('---------------------------------------\n');
 
 /*
  * Servo Control server
@@ -28,10 +38,6 @@ servo.spin(servo_port);
  */
 const signal_port = 9000;
 signal.spin(signal_port);
-
-/*
- *
- */
 
 /*
  * Robot-connected Web-App

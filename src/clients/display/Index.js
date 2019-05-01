@@ -1,3 +1,12 @@
+/*
+ *	Display Web App
+ *	
+ *	Handles front-end logic for VR display
+ *
+ *	@author: Dhruv K Patel
+ * 	@author: Sachal Dhillon
+ */
+
 const SIGNAL_SERVER_PORT = 9000;
 let tranceiverMids = {};
 let orientationChannel;

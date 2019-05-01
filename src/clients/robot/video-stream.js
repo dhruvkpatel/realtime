@@ -1,3 +1,12 @@
+/**
+ * 	Video Stream Library
+ * 	
+ * 	Used by robot client to open video stream & port 
+ * it to WebRTC connection
+ * 
+ * 	@author: Dhruv K Patel
+ */
+
 class VideoStream {
 
 	constructor(streamLabel, objectID, rtcConnection, videoLabelChannel) {

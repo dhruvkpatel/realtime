@@ -1,3 +1,13 @@
+/**
+ *	WebRTC Client Library
+ * 
+ *	Client web-apps use this library to communicate with 
+ *	the local signal server ("server/signal.js") and connect
+ *	to another client. 
+ *	
+ *	@author: Dhruv K. Patel
+ */
+
 const RTCCONFIG = {
 	'iceServers': [{'urls': ['stun:stun1.l.google.com:19302', 'stun:stun2.1.google.com:19302']}]
 };

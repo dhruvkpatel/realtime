@@ -1,3 +1,12 @@
+/**
+ *	Robot Web App
+ *	
+ *	Handles front-end logic for camera selection app.
+ *
+ *	@author: Dhruv K Patel
+ */
+
+
 const SIGNAL_SERVER_PORT = 9000;
 const SERVO_SERVER_PORT = 9001;
 

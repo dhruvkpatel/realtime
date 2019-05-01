@@ -1,4 +1,6 @@
-/*
+/**
+ * Servo Control Server
+ *
  * Interface for servo device. Handles setup, including:
  *
  * 1. Opening serial connection with servo device
@@ -10,6 +12,8 @@
  *	Device Serial Protocol:
  *		To set servo state, controller will send: "g,SERVO_0_ANGLE,SERVO_1_ANGLE", e.g. "g,145,20"
  *		When device gives feedback, device will send: "f,SERVO_0_ANGLE,SERVO_1_ANGLE", e.g. "f,140,10"
+ *
+ * @author: Dhruv K Patel
  */
 
 const SerialPort = require('serialport');

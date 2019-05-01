@@ -1,7 +1,14 @@
-/*
- * WebRTC Signaling Server.
- *
- * Loosely adapted from: https://www.tutorialspoint.com/webrtc
+/**
+ *	WebRTC Signaling Server.
+ *	Loosely adapted from: https://www.tutorialspoint.com/webrtc
+ * 
+ *	Relays WebRTC configuration information between two clients.
+ *	Clients use "webrtc-client.js" to communicate with this server
+ *	and form their WebRTC connections. Currently this server can only
+ *	connect two clients together at a time. Must run locally on computer
+ *	attached to camera system.
+ * 
+ *	@author: Dhruv K Patel
  */
 
 // For wscat testing

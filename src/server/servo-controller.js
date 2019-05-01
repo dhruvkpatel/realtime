@@ -1,5 +1,8 @@
-/*
- * Controls servo device given a goal orientation
+/**
+ * Servo Control Library
+ * 
+ * Controls servo device given a goal orientation; 
+ * Used by "servo-device.js"
  *
  * Relies on the following assumptions
  *
@@ -12,6 +15,10 @@
  * 	- Servo 1: controls tilt & maps to orientation.x axis (positive angle = tilt up)
  * 	
  * 	- Orientation.z (yaw) axis is not controlled for
+ * 
+ * 	@author: Dhruv K Patel
+ * 	@author: Sachal Dhillon
+ * 	@author: Guangshen Ma
  */
 class ServoController {
 

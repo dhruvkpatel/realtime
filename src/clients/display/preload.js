@@ -1,3 +1,13 @@
+/**
+ *  VR App Preload
+ *
+ *  Handles additional front-end logic for VR webapp. Runs before "Index.js"
+ * 
+ *  @author: Sachal Dhillon
+ *  @author: Dhruv K Patel
+ */
+
+
 AFRAME.registerComponent('rotation-reader', {
     init: function () {
       this.el.addEventListener('triggerdown', (evt) => toggleView(evt))
@@ -34,6 +44,7 @@ AFRAME.registerComponent('rotation-reader', {
         videosphere.setAttribute("visible",true)
         cam.setAttribute("height", curHeight()/this.ZOOM_SCALE_FACTOR)
         cam.setAttribute("width", curWidth()/this.ZOOM_SCALE_FACTOR)
+        sky.setAttribute("visible", false)
         break;
       case this.VIEW_ZOOMED:
         sky.setAttribute("visible",true)
@@ -45,7 +56,7 @@ AFRAME.registerComponent('rotation-reader', {
         break;
       case this.VIEW_360:
         cam.setAttribute("visible", false)
-        sky.setAttribute("false",true)
+        sky.setAttribute("visible", false)
         arrows.forEach((node) => {node.setAttribute("visible",false)});
         break;
     }
