@@ -7,6 +7,7 @@ Guangshen Ma
 Ryan Connolly  
 Raphael Kim**  
 
+
 Requirements
 ------------
 * Computer that runs Windows, OS X, or Linux (to connect to camera rig)
