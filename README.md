@@ -7,6 +7,7 @@ Guangshen Ma
 Ryan Connolly  
 Raphael Kim**  
 
+This is the source code for a real-time virtual-reality robotic vision system. The project was created by students for ECE 590 at Duke University. [Read more about the project here.](https://github.com/dhruvkpatel/realtime/blob/master/doc/realtime.pdf)
 
 Requirements
 ------------
