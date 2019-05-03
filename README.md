@@ -20,7 +20,7 @@ Setup
 	* **360 Camera:** Bolt the Theta V 360 camera to the top of the rig so that the pushbutton face is pointing towards the "front". Connect the Micro-USB cable to the camera. Connect the other end of the cable to the server computer using a USB extension cable. Once the 360 camera is on, set the 360 camera to **LIVE** mode.
 	* **Webcam:** Connect the webcam to the computer via USB.
 	* **Servo Control Box:** Connect the servo control box to the computer via the Mini-USB cable. Power the servo control box using the 5V power adapter. Flip the switch on. If the servo control box is ready, both the blue and red LEDs should be lit.
-2. This project is built with **Node.js** and **npm**. On the computer intended to be attached to the camera rig, install both **Node.js** and **npm** at once. [For OSX or Windows, use this link.](https://www.npmjs.com/get-npm). [For Linux, use this link.](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04).
+2. This project is built with **Node.js** and **npm**. On the computer intended to be attached to the camera rig, install both **Node.js** and **npm** at once. [For OSX or Windows, use this link.](https://www.npmjs.com/get-npm) [For Linux, use this link.](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04)
 3. Clone this repository:  
 ```shell
 git clone https://github.com/dhruvkpatel/realtime.git
